@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import logo from '../assets/logo.png';
 
 export const generateInvoice = (order) => {
     try {
@@ -9,16 +10,23 @@ export const generateInvoice = (order) => {
 
         // ══ BRANDING ══
         doc.setFillColor(249, 115, 22); // Orange-500
-        doc.rect(0, 0, pageWidth, 40, 'F');
+        doc.rect(0, 0, pageWidth, 45, 'F');
+
+        // Logo Integration
+        try {
+            doc.addImage(logo, 'PNG', 15, 7, 30, 30);
+        } catch (imgError) {
+            console.warn('Logo image could not be loaded for PDF:', imgError);
+        }
 
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(28);
         doc.setFont('helvetica', 'bold');
-        doc.text('ChatoriApp', 20, 25);
+        doc.text('ChatoriApp', 50, 25);
 
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
-        doc.text('PREMIUM FOOD DELIVERY EXPERIENCE', 20, 32);
+        doc.text('PREMIUM FOOD DELIVERY EXPERIENCE', 50, 32);
 
         // ══ INVOICE INFO ══
         doc.setTextColor(50, 50, 50);

@@ -1,56 +1,81 @@
 # ChatoriApp - Food Delivery System
 
-ChatoriApp is a premium, full-stack food delivery application designed to provide a seamless "Royal Feast" experience. The platform connects customers with a diverse range of restaurants and manages the entire lifecycle of an order—from selection and payment to delivery and administrative oversight.
+ChatoriApp is a premium, full-stack food delivery ecosystem designed to provide a seamless and luxurious ordering experience. The platform connects customers with top-tier restaurants, managing the entire lifecycle of an order from discovery and secure payment to real-time tracking and administrative oversight.
 
-## 🚀 Key Modules
+## ✨ Key Features
 
-### 1. User Application (`/client`)
+### 👤 User Experience (`/client`)
 
-The customer-facing portal designed with a focus on high-end aesthetics and responsiveness.
+- **Immersive Interface**: High-end aesthetics with smooth animations using **Framer Motion** and **GSAP**.
+- **Dynamic Hero Sliders**: Interactive exploration of featured dishes and promotions.
+- **Advanced Restaurant Discovery**: Browse by category, popularity, or specific cuisine.
+- **Interactive Menu**: Richly detailed menu pages with categorization and dish availability.
+- **Royal Cart**: A persistent, animated shopping cart with instant updates.
+- **Smart Checkout**:
+  - **Leaflet Map Integration**: Pinpoint delivery addresses with precision.
+  - **Address Management**: Save and manage multiple delivery locations.
+  - **Razorpay Secure Payments**: Industry-standard payment gateway for safe transactions.
+- **Real-time Order Tracking**: Follow your feast with live status updates.
+- **Personalized Profile**: Manage settings, order history, and preferences.
+- **Aesthetic Modes**: Seamless switching between premium **Dark** and **Light** modes.
+- **Firebase Auth**: Secure Google Sign-In and email/password authentication.
 
-- **Home & Explore**: Interactive hero sliders, popular dish highlights, and restaurant listings.
-- **Menu & Cart**: Detailed restaurant pages with categorized menus and a persistent, animated shopping cart.
-- **Checkout & Payments**: Address selection with Leaflet Map integration and secure payments via Razorpay.
-- **Order Tracking**: Real-time status updates and order history.
-- **Personalization**: User profile management and a system-wide Dark/Light mode.
+### 🍱 Restaurant & Catalog Management (`/admin` - Admin Role)
 
-### 2. Delivery Partner Portal (`/admin` - Delivery Role)
+- **Central Dashboard**: Comprehensive overview of platform health and active orders.
+- **Partner Management**: Onboard and manage restaurant partners with ease.
+- **Advanced Inventory Control**:
+  - Add, edit, and delete food items.
+  - Manage categories and pricing.
+  - Toggle item availability in real-time.
+  - Upload high-quality food imagery via **Multer** and **Cloudinary**.
+- **User Governance**: Oversee customer accounts and delivery roles.
 
-A specialized interface for delivery personnel to manage their assigned tasks.
+### 🚚 Delivery Excellence (`/admin` - Delivery Role)
 
-- **Assigned Tasks**: View active orders assigned for delivery.
-- **Status Updates**: Simple controls to update order milestones (e.g., _Picked Up_, _In Transit_, _Delivered_).
-- **Navigation Info**: Access to customer delivery addresses and contact information.
-
-### 3. Admin Dashboard (`/admin` - Admin Role)
-
-The central command center for managing the platform's operations.
-
-- **Restaurant Management**: Add, edit, and monitor restaurant partners.
-- **Catalog Control**: Manage food items, pricing, and availability.
-- **User Oversight**: View and manage all platform users, including delivery partners and admins.
-- **Order Monitoring**: A bird's-eye view of all transactions and delivery statuses across the platform.
+- **Task-Oriented Dashboard**: Dedicated interface for delivery partners to manage active assignments.
+- **Milestone Management**: Instantly update order status (Picked up, In transit, Delivered).
+- **Navigation Assistance**: Quick access to customer contact details and map coordinates.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React.js, Tailwind CSS (Mobile-First Design), Framer Motion (Animations), React Icons.
-- **Backend**: Node.js, Express.js.
-- **Database**: MongoDB (Mongoose ODM).
-- **Authentication**: JWT (JSON Web Tokens) for session management, Firebase for Google Sign-In.
-- **Payments**: Razorpay Integration.
-- **Maps**: Leaflet / React-Leaflet.
+### Frontend
+
+- **Framework**: [React.js](https://reactjs.org/) (Vite)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) (Mobile-First approach)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/), [GSAP](https://gsap.com/)
+- **Icons**: [React Icons](https://react-icons.github.io/react-icons/)
+- **State Management**: React Context API
+- **Routing**: React Router DOM
+
+### Backend
+
+- **Runtime**: [Node.js](https://nodejs.org/)
+- **Framework**: [Express.js](https://expressjs.com/)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
+- **Authentication**: [JWT](https://jwt.io/) & [Firebase](https://firebase.google.com/)
+- **File Storage**: [Cloudinary](https://cloudinary.com/) (using [Multer-Cloudinary-Storage](https://www.npmjs.com/package/multer-storage-cloudinary))
+
+### Services
+
+- **Payments**: [Razorpay](https://razorpay.com/)
+- **Maps**: [Leaflet](https://leafletjs.com/) & [React-Leaflet](https://react-leaflet.js.org/)
 
 ## 📁 Project Structure
 
 ```bash
 food-delivery/
 ├── client/           # Customer Frontend (Vite + React)
+│   ├── src/pages     # Home, Restaurant Menu, Cart, Checkout, Profile
+│   └── src/context   # Auth, Cart, and Theme state management
 ├── admin/            # Admin & Delivery Frontend (Vite + React)
+│   ├── src/pages     # Dashboards, Inventory, Users, Orders
+│   └── src/context   # Role-based access and admin state
 ├── server/           # Backend REST API (Node/Express)
-│   ├── config/       # Database & Environment configuration
-│   ├── controllers/  # Business logic for each resource
-│   ├── models/       # Mongoose data schemas
-│   ├── middleware/   # Authentication & Role-based access control
+│   ├── config/       # DB (Mongoose), Cloudinary, and Firebase configs
+│   ├── controllers/  # Core business logic (Auth, Food, Order, Payment)
+│   ├── models/       # MongoDB/Mongoose schemas
+│   ├── middleware/   # JWT Auth & Role-based Access Control
 │   └── routes/       # API endpoint definitions
 └── README.md
 ```
@@ -59,32 +84,33 @@ food-delivery/
 
 ### 1. Prerequisites
 
-- Node.js (v16+)
-- MongoDB connection string
+- Node.js (v18+)
+- MongoDB Atlas account
+- Firebase Project (for Auth)
+- Razorpay Account (for Payments)
+- Cloudinary Account (for Image Storage)
 
-### 2. Server Setup
+### 2. Installation (Standard approach)
+
+#### Backend
 
 ```bash
 cd server
 npm install
-# Configure your .env with MONGO_URI, JWT_SECRET, etc.
+# Create .env with: MONGO_URI, JWT_SECRET, CLOUDINARY_*, RAZORPAY_*
 npm start
 ```
 
-### 3. Client (User) Setup
+#### Client & Admin
 
 ```bash
+# For User Portal
 cd client
 npm install
 npm run dev
-```
 
-### 4. Admin (Admin/Delivery) Setup
-
-```bash
+# For Admin/Delivery Portal
 cd admin
 npm install
 npm run dev
 ```
-
----
