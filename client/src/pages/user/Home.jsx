@@ -56,6 +56,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [itemsLoading, setItemsLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState(null);
+    const [activeDishCategory, setActiveDishCategory] = useState('All');
 
     useEffect(() => {
         api.get('/restaurants').then(r => setRestaurants(r.data)).catch(console.error).finally(() => setLoading(false));
@@ -69,6 +70,11 @@ const Home = () => {
         return matchCat;
     });
     const featured = restaurants.slice(0, 4);
+
+    const dishCategories = ['All', ...new Set(popularItems.map(item => item.category).filter(Boolean))];
+    const filteredDishes = activeDishCategory === 'All'
+        ? popularItems
+        : popularItems.filter(item => item.category === activeDishCategory);
 
     const Spinner = () => <div className="flex justify-center py-10"><div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" /></div>;
 
@@ -181,55 +187,84 @@ const Home = () => {
                             Most <span className="text-orange-500 underline decoration-orange-200 decoration-8 underline-offset-8">Loved</span> Dishes
                         </motion.h2>
                         <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">Explore the flavors that everyone is talking about.</p>
+
+                        {!itemsLoading && dishCategories.length > 1 && (
+                            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mt-8">
+                                {dishCategories.map((cat, idx) => (
+                                    <motion.button
+                                        key={idx}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: idx * 0.05 }}
+                                        onClick={() => setActiveDishCategory(cat)}
+                                        className={`px-6 py-2.5 rounded-[1.5rem] text-sm font-black transition-all ${activeDishCategory === cat
+                                                ? 'bg-orange-500 text-white shadow-xl shadow-orange-500/30 scale-105'
+                                                : 'bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:bg-orange-50 dark:hover:bg-gray-800 hover:text-orange-500 shadow-lg shadow-gray-200/50 dark:shadow-none border border-transparent hover:border-orange-500/20'
+                                            }`}
+                                    >
+                                        {cat}
+                                    </motion.button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
-                    {itemsLoading ? <Spinner /> : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {popularItems.map((item, i) => (
-                                <motion.div
-                                    key={item._id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className="group bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 hover:border-orange-500/30 transition-all duration-500"
-                                >
-                                    <div className="relative h-56 overflow-hidden">
-                                        <img src={item.image} alt={item.name}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                            onError={e => { e.target.src = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80'; }} />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                        <div className="absolute top-4 left-4">
-                                            <span className="bg-white/90 backdrop-blur-md text-gray-900 text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg uppercase tracking-wider">
-                                                {item.category}
-                                            </span>
-                                        </div>
-                                        <button className="absolute bottom-4 right-4 bg-orange-500 text-white p-3 rounded-2xl shadow-xl transform translate-y-12 group-hover:translate-y-0 transition-transform duration-300">
-                                            <FiArrowRight size={20} />
-                                        </button>
-                                    </div>
-                                    <div className="p-7">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <h4 className="font-black text-gray-900 dark:text-white text-lg tracking-tight group-hover:text-orange-500 transition-colors">{item.name}</h4>
-                                            <span className="flex items-center gap-1 text-orange-500 font-black text-sm"><FiStar className="fill-orange-500" size={14} /> {ratingFor(item._id?.charCodeAt(0) || 1)}</span>
-                                        </div>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 flex items-center gap-2 font-bold">
-                                            <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
-                                            {item.restaurantId?.name}
-                                        </p>
-                                        <div className="flex items-center justify-between mt-auto">
-                                            <div className="flex flex-col">
-                                                <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Price</span>
-                                                <span className="text-2xl font-black text-gray-900 dark:text-white">₹{item.price}</span>
-                                            </div>
-                                            <Link to={`/restaurant/${item.restaurantId?._id}`} className="px-6 py-3 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black hover:bg-orange-50 dark:hover:bg-orange-500 dark:hover:text-white transition-all shadow-lg active:scale-95">
-                                                ORDER NOW
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
+                    {itemsLoading ? <Spinner /> : filteredDishes.length === 0 ? (
+                        <div className="text-center py-20 bg-gray-50 dark:bg-gray-800/30 rounded-[3rem] border-4 border-dashed border-gray-100 dark:border-gray-800">
+                            <div className="text-6xl mb-4">🍽️</div>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">No dishes found</h3>
+                            <p className="text-gray-500 dark:text-gray-400 text-base">We couldn't find any dishes in this category.</p>
                         </div>
+                    ) : (
+                        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <AnimatePresence mode="popLayout">
+                                {filteredDishes.map((item, i) => (
+                                    <motion.div
+                                        layout
+                                        key={item._id}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="group bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 hover:border-orange-500/30 transition-all duration-500"
+                                    >
+                                        <div className="relative h-56 overflow-hidden">
+                                            <img src={item.image} alt={item.name}
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                onError={e => { e.target.src = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80'; }} />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                            <div className="absolute top-4 left-4">
+                                                <span className="bg-white/90 backdrop-blur-md text-gray-900 text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg uppercase tracking-wider">
+                                                    {item.category}
+                                                </span>
+                                            </div>
+                                            <button className="absolute bottom-4 right-4 bg-orange-500 text-white p-3 rounded-2xl shadow-xl transform translate-y-12 group-hover:translate-y-0 transition-transform duration-300">
+                                                <FiArrowRight size={20} />
+                                            </button>
+                                        </div>
+                                        <div className="p-7">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h4 className="font-black text-gray-900 dark:text-white text-lg tracking-tight group-hover:text-orange-500 transition-colors">{item.name}</h4>
+                                                <span className="flex items-center gap-1 text-orange-500 font-black text-sm"><FiStar className="fill-orange-500" size={14} /> {ratingFor(item._id?.charCodeAt(0) || 1)}</span>
+                                            </div>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 flex items-center gap-2 font-bold">
+                                                <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+                                                {item.restaurantId?.name}
+                                            </p>
+                                            <div className="flex items-center justify-between mt-auto">
+                                                <div className="flex flex-col">
+                                                    <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Price</span>
+                                                    <span className="text-2xl font-black text-gray-900 dark:text-white">₹{item.price}</span>
+                                                </div>
+                                                <Link to={`/restaurant/${item.restaurantId?._id}`} className="px-6 py-3 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black hover:bg-orange-50 dark:hover:bg-orange-500 dark:hover:text-white transition-all shadow-lg active:scale-95">
+                                                    ORDER NOW
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
                     )}
                 </div>
             </section>

@@ -47,7 +47,7 @@ const Register = () => {
     };
 
     const fields = [
-        { key: 'name', icon: <FiUser />, type: 'text', label: 'Full Name', placeholder: 'John Doe' },
+        { key: 'name', icon: <FiUser />, type: 'text', label: 'Full Name', placeholder: 'Enter your name' },
         { key: 'email', icon: <FiMail />, type: 'email', label: 'Email Address', placeholder: 'you@example.com' },
         { key: 'mobile', icon: <FiPhone />, type: 'tel', label: 'Mobile Number', placeholder: '10-digit number', pattern: '[0-9]{10}', maxLength: 10 },
         { key: 'password', icon: <FiLock />, type: 'password', label: 'Password', placeholder: 'Min 6 characters', minLength: 6 },
