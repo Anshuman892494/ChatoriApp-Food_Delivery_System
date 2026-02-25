@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
+import { FiMail, FiLock, FiArrowRight, FiEye, FiEyeOff } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../firebase';
@@ -12,6 +12,7 @@ const Login = () => {
     const [form, setForm] = useState({ identifier: '', password: '' });
     const [loading, setLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -107,16 +108,24 @@ const Login = () => {
                         <div className="flex flex-col gap-2.5 text-sm">
                             <div className="flex items-center justify-between ml-1">
                                 <label className="font-bold text-gray-700 dark:text-gray-300">Password</label>
-                                <Link to="#" className="text-xs font-bold text-orange-600 hover:text-orange-700 transition-colors">Forgot Password?</Link>
                             </div>
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                value={form.password}
-                                onChange={e => setForm({ ...form, password: e.target.value })}
-                                required
-                                className="w-full bg-[#F3F4F6] dark:bg-gray-800 border-2 border-transparent rounded-[16px] px-6 py-4 text-gray-900 dark:text-white placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-900 focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-900/20 focus:border-orange-400 transition-all outline-none shadow-sm"
-                            />
+                            <div className="relative group">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    value={form.password}
+                                    onChange={e => setForm({ ...form, password: e.target.value })}
+                                    required
+                                    className="w-full bg-[#F3F4F6] dark:bg-gray-800 border-2 border-transparent rounded-[16px] px-6 py-4 text-gray-900 dark:text-white placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-900 focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-900/20 focus:border-orange-400 transition-all outline-none shadow-sm pr-14"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors p-1"
+                                >
+                                    {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Buttons Row */}

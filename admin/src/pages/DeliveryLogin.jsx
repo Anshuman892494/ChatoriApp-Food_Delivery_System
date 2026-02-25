@@ -4,11 +4,12 @@ import { motion } from 'framer-motion';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { FiTruck, FiSettings } from 'react-icons/fi';
+import { FiTruck, FiSettings, FiEye, FiEyeOff } from 'react-icons/fi';
 
 const DeliveryLogin = () => {
     const [form, setForm] = useState({ identifier: '', password: '' });
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -75,16 +76,24 @@ const DeliveryLogin = () => {
                     <div className="space-y-1.5">
                         <div className="flex items-center justify-between ml-1">
                             <label className="text-[11px] font-black text-[#1a1c23] uppercase tracking-widest">Password</label>
-                            <button type="button" className="text-[10px] font-black text-orange-600 hover:text-orange-700 uppercase tracking-widest transition-colors">Forgot?</button>
                         </div>
-                        <input
-                            type="password"
-                            placeholder="••••••••"
-                            value={form.password}
-                            onChange={e => setForm({ ...form, password: e.target.value })}
-                            required
-                            className="w-full px-5 py-3.5 rounded-xl bg-[#f5f7fb] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-4 focus:ring-orange-600/5 focus:outline-none transition-all font-medium border-2 border-transparent focus:border-orange-600/10 text-sm"
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="••••••••"
+                                value={form.password}
+                                onChange={e => setForm({ ...form, password: e.target.value })}
+                                required
+                                className="w-full px-5 py-3.5 rounded-xl bg-[#f5f7fb] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-4 focus:ring-orange-600/5 focus:outline-none transition-all font-medium border-2 border-transparent focus:border-orange-600/10 text-sm pr-12"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors p-1"
+                            >
+                                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                            </button>
+                        </div>
                     </div>
 
                     <button
