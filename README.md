@@ -2,6 +2,9 @@
 
 ChatoriApp is a premium, full-stack food delivery ecosystem designed to provide a seamless and luxurious ordering experience. The platform connects customers with top-tier restaurants, managing the entire lifecycle of an order from discovery and secure payment to real-time tracking and administrative oversight.
 
+## Screenshot - Dashboard
+<img width="1920" height="1080" alt="image" src="https://github.com/Anshuman892494/ChatoriApp-Food_Delivery_System/blob/main/Screenshot/Screenshot%202026-02-25%20054540.png?raw=true" />
+
 ## ✨ Key Features
 
 ### 👤 User Experience (`/client`)
