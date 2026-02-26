@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
     FiSearch, FiMapPin, FiArrowRight,
     FiClock, FiStar, FiTruck, FiShield, FiThumbsUp,
@@ -17,6 +17,8 @@ import 'swiper/css/pagination';
 
 import logo from '../../assets/logo.png';
 import api from '../../api/axios';
+import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 const HERO_SLIDES = [
     {
         title: "Burger Cravings? Sorted.",
@@ -51,6 +53,19 @@ const ratingFor = (id) => (4.0 + ((id * 7) % 10) * 0.09).toFixed(1);
 const timeFor = (id) => `${20 + ((id * 3) % 20)}–${35 + ((id * 3) % 15)} min`;
 
 const Home = () => {
+    const navigate = useNavigate();
+    const { addToCart } = useCart();
+    const { user } = useAuth();
+
+    const handleOrderNow = async (item) => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+        await addToCart(item);
+        navigate('/cart');
+    };
+
     const [restaurants, setRestaurants] = useState([]);
     const [popularItems, setPopularItems] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -198,8 +213,8 @@ const Home = () => {
                                         transition={{ delay: idx * 0.05 }}
                                         onClick={() => setActiveDishCategory(cat)}
                                         className={`px-6 py-2.5 rounded-[1.5rem] text-sm font-black transition-all ${activeDishCategory === cat
-                                                ? 'bg-orange-500 text-white shadow-xl shadow-orange-500/30 scale-105'
-                                                : 'bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:bg-orange-50 dark:hover:bg-gray-800 hover:text-orange-500 shadow-lg shadow-gray-200/50 dark:shadow-none border border-transparent hover:border-orange-500/20'
+                                            ? 'bg-orange-500 text-white shadow-xl shadow-orange-500/30 scale-105'
+                                            : 'bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:bg-orange-50 dark:hover:bg-gray-800 hover:text-orange-500 shadow-lg shadow-gray-200/50 dark:shadow-none border border-transparent hover:border-orange-500/20'
                                             }`}
                                     >
                                         {cat}
@@ -256,9 +271,9 @@ const Home = () => {
                                                     <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Price</span>
                                                     <span className="text-2xl font-black text-gray-900 dark:text-white">₹{item.price}</span>
                                                 </div>
-                                                <Link to={`/restaurant/${item.restaurantId?._id}`} className="px-6 py-3 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black hover:bg-orange-50 dark:hover:bg-orange-500 dark:hover:text-white transition-all shadow-lg active:scale-95">
+                                                <button onClick={(e) => { e.preventDefault(); handleOrderNow(item); }} className="px-6 py-3 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-black hover:bg-orange-50 dark:hover:bg-orange-500 dark:hover:text-white transition-all shadow-lg active:scale-95">
                                                     ORDER NOW
-                                                </Link>
+                                                </button>
                                             </div>
                                         </div>
                                     </motion.div>

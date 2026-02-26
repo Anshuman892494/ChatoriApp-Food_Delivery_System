@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
@@ -24,6 +24,15 @@ import UserProfile from './pages/user/UserProfile';
 import Restaurants from './pages/user/Restaurants';
 import StaticPage from './pages/user/StaticPage';
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
@@ -40,6 +49,7 @@ function App() {
         {showSplash && <SplashScreen />}
       </AnimatePresence>
       <BrowserRouter>
+        <ScrollToTop />
         <AuthProvider>
           <CartProvider>
             <Toaster
