@@ -11,6 +11,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+// Ping route for keep-alive
+app.get('/ping', (req, res) => {
+    res.status(200).send('pong');
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/admin', require('./routes/admin'));
